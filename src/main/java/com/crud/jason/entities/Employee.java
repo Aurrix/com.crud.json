@@ -32,8 +32,8 @@ public class Employee {
 	@GeneratedValue
 	@Id
 	public Long id;
-	public String Name;
-	public String Surname;
+	public String name;
+	public String surname;
 	public String email;
 	
 }

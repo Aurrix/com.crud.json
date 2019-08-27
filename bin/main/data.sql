@@ -1,5 +1,5 @@
 insert into employee
-values(10001,'Ludvic', 'Estyard','l.estyard@music.note.com');
+values(10001,'l.estyard@music.note.com','Ludvic', 'Estyard');
 
 insert into employee
-values(10002,'Dr.Van', 'Oxford','van.oxford@uio.com');
+values(10002,'van.oxford@uio.com','Dr.Van', 'Oxford');

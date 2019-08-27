@@ -59,7 +59,7 @@ public class RestController {
 		
 		if (!employeeOptional.isPresent()) {
 			
-		throw new NotFoundException("ID :" + id);
+		throw new NotFoundException("Can't find employee with ID :" + id);
 		}
 		
 		return employeeOptional.get();
@@ -84,7 +84,7 @@ public class RestController {
 	@PutMapping("/employee/{id}")
 	public ResponseEntity<?> updateEmployee(@PathVariable Long id, @RequestBody Employee employee) throws NotFoundException {
 		Optional<Employee> updatedEmployee = employeeRepository.findById(id);
-		if(!updatedEmployee.isPresent()) throw new NotFoundException("ID :" + id);
+		if(!updatedEmployee.isPresent()) throw new NotFoundException("Can't find employee with ID :" + id);
 		employee.setId(id);
 		employeeRepository.save(employee);
 		return new ResponseEntity<>(employee,HttpStatus.OK);

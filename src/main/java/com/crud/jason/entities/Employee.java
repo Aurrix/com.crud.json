@@ -18,6 +18,9 @@ package com.crud.jason.entities;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -32,8 +35,15 @@ public class Employee {
 	@GeneratedValue
 	@Id
 	public Long id;
+	@NotNull
+	@NotBlank
 	public String name;
+	@NotNull
+	@NotBlank
 	public String surname;
+	@NotNull
+	@NotBlank
+	@Email
 	public String email;
 	
 }

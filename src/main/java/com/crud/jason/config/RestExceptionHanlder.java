@@ -30,8 +30,9 @@ import javassist.NotFoundException;
 /**
  * @author Alisher Urunov
  *
+ * Uncomment @ControllerAdvice for custom exception handling
  */
-@ControllerAdvice
+//@ControllerAdvice
 public class RestExceptionHanlder {
 	 	@ExceptionHandler({NotFoundException.class,ConstraintViolationException.class})
 	    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

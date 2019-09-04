@@ -41,7 +41,14 @@ import javassist.NotFoundException;
  * @author Alisher Urunov
  *
  */
-@org.springframework.web.bind.annotation.RestController
+
+/*	
+ * 
+ * Uncomment @RestController annotation for custom 
+ * rest points implementation
+ *
+ */
+//@org.springframework.web.bind.annotation.RestController
 public class RestController {
 
 	@Autowired

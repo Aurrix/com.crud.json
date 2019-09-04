@@ -16,6 +16,7 @@
 package com.crud.jason.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import com.crud.jason.entities.Employee;
 
@@ -23,6 +24,7 @@ import com.crud.jason.entities.Employee;
  * @author Alisher Urunov
  *
  */
+@RepositoryRestResource(path = "employees")
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 }

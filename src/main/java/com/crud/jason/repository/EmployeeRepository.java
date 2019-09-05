@@ -22,9 +22,9 @@ import com.crud.jason.entities.Employee;
 
 /**
  * @author Alisher Urunov
- *
+ * Uncomment RepositoryRestResource for Spring Native Rest support
  */
-@RepositoryRestResource(path = "employees")
+//@RepositoryRestResource(path = "employees")
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 }

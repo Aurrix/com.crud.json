@@ -19,6 +19,7 @@ import java.lang.module.FindException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ import javassist.NotFoundException;
  * rest points implementation
  *
  */
-//@org.springframework.web.bind.annotation.RestController
+@org.springframework.web.bind.annotation.RestController
 public class RestController {
 
 	@Autowired
@@ -78,7 +79,7 @@ public class RestController {
 	}
 	
 	@PostMapping("/employees")
-	public ResponseEntity<?> saveEmployee(@RequestBody Employee employee) {
+	public ResponseEntity<?> saveEmployee(@RequestBody @Valid Employee employee) {
 		
 		employee.setId(0l);
 		
@@ -89,7 +90,7 @@ public class RestController {
 	
 	
 	@PutMapping("/employee/{id}")
-	public ResponseEntity<?> updateEmployee(@PathVariable Long id, @RequestBody Employee employee) throws NotFoundException {
+	public ResponseEntity<?> updateEmployee(@PathVariable Long id, @RequestBody @Valid Employee employee) throws NotFoundException {
 		Optional<Employee> updatedEmployee = employeeRepository.findById(id);
 		if(!updatedEmployee.isPresent()) throw new NotFoundException("Can't find employee with ID :" + id);
 		employee.setId(id);

@@ -19,8 +19,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
 
 import lombok.Data;
 
@@ -37,13 +40,16 @@ public class Employee {
 	public Long id;
 	@NotNull
 	@NotBlank
+	@Length(max = 40)
 	public String name;
 	@NotNull
 	@NotBlank
+	@Length(max = 40)
 	public String surname;
 	@NotNull
 	@NotBlank
 	@Email
+	@Length(max = 40)
 	public String email;
 	
 }

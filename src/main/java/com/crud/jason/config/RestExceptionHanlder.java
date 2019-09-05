@@ -20,10 +20,14 @@ import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javassist.NotFoundException;
 
@@ -32,14 +36,27 @@ import javassist.NotFoundException;
  *
  * Uncomment @ControllerAdvice for custom exception handling
  */
-//@ControllerAdvice
-public class RestExceptionHanlder {
-	 	@ExceptionHandler({NotFoundException.class,ConstraintViolationException.class})
-	    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	    @ResponseBody
-	    public ResponseEntity<?> processValidationError(NotFoundException ex) {
-	        String message = ex.getLocalizedMessage();
-	        System.out.println(message);
-	        return new ResponseEntity<>(message,new HttpHeaders(),HttpStatus.BAD_REQUEST);
+@ControllerAdvice
+public class RestExceptionHanlder extends ResponseEntityExceptionHandler {
+	 	
+		@ExceptionHandler(NotFoundException.class)
+
+	    public ResponseEntity<?> notFoundReply(NotFoundException ex) {
+	        ExceptionEntity reply;
+	        return new ResponseEntity<>(reply = new ExceptionEntity(HttpStatus.NOT_FOUND,"Error 404, try again with different path variable", ex.getLocalizedMessage())
+	        		,new HttpHeaders(),reply.getStatus());
 	    }
+		
+		
+		
+		@Override
+		protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+				HttpHeaders headers, HttpStatus status, WebRequest request) {
+			 ExceptionEntity reply;
+		        return new ResponseEntity<>(reply = new ExceptionEntity(HttpStatus.BAD_REQUEST, "Entiry didn't path validation(should not be blank and not exceed 40 characters)", ex.getLocalizedMessage())
+		        		,new HttpHeaders(),reply.getStatus());
+		}
+
+
+
 }

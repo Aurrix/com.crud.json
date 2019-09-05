@@ -23,9 +23,9 @@ gradle build
 ```
 4. Gradle will generate jar at ../com.crud.json/build/libs/
 
-### Testing cases
+### Testing
 
-Project does not have test cases since purely driven by Spring Data Rest.
+To be implemented
 
 ## License
 

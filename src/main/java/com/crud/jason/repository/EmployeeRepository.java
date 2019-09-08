@@ -15,6 +15,9 @@
  */
 package com.crud.jason.repository;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
@@ -23,8 +26,9 @@ import com.crud.jason.entities.Employee;
 /**
  * @author Alisher Urunov
  * Uncomment RepositoryRestResource for Spring Native Rest support
+ * For paging support extend from PagingAndSortingRepository
  */
 //@RepositoryRestResource(path = "employees")
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-
+	public Page findAll(Pageable pageable);
 }

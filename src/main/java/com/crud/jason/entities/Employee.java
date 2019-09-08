@@ -24,6 +24,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.hateoas.ResourceSupport;
 
 import lombok.Data;
 
@@ -33,11 +34,11 @@ import lombok.Data;
  */
 @Data
 @Entity
-public class Employee {
+public class Employee extends ResourceSupport {
 
 	@GeneratedValue
 	@Id
-	public Long id;
+	public Long employeeId;
 	@NotNull
 	@NotBlank
 	@Length(max = 40)
@@ -51,5 +52,7 @@ public class Employee {
 	@Email
 	@Length(max = 40)
 	public String email;
+	
+	
 	
 }

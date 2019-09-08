@@ -18,11 +18,25 @@ package com.crud.jason.controllers;
 import java.lang.module.FindException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,12 +46,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.crud.jason.entities.Employee;
 import com.crud.jason.repository.EmployeeRepository;
 
 import javassist.NotFoundException;
 
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 /**
  * @author Alisher Urunov
  *
@@ -56,35 +74,46 @@ public class RestController {
 	EmployeeRepository employeeRepository;
 	
 	@GetMapping("/employees")
-	public List<Employee> getAllEmployees() {
+	public Resources<?> getAllEmployees(Pageable pageable) {
 		
-		return employeeRepository.findAll();
+		Page<Employee> collection = employeeRepository.findAll(pageable);
+		collection.forEach(e ->{
+			try {
+				e.add(linkTo(methodOn(RestController.class).getEmployee(e.getEmployeeId())).withSelfRel());
+			} catch (NotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
+		Link selfLink = linkTo(methodOn(RestController.class).getAllEmployees(pageable)).withSelfRel();
+		Resources<Employee> resources = new Resources<>(collection,selfLink);
+		
+		return resources;
 	}
 	
 	@GetMapping("/employee/{id}")
-	public Employee getEmployee(@PathVariable Long id) throws NotFoundException {
+	public Resource<?> getEmployee(@PathVariable Long id) throws NotFoundException {
 		Optional<Employee> employeeOptional = employeeRepository.findById(id);
 		
 		if (!employeeOptional.isPresent()) {
 			
 		throw new NotFoundException("Can't find employee with ID :" + id);
 		}
-		
-		return employeeOptional.get();
+		Link linkToQueue = linkTo(methodOn(RestController.class).getAllEmployees(PageRequest.of(0, 1))).withSelfRel();
+		employeeOptional.get().add(linkTo(methodOn(RestController.class).getEmployee(id)).withSelfRel());
+		return new Resource<Employee>(employeeOptional.get(), linkToQueue);
 	}
 	
 	@DeleteMapping("/employee/{id}")
-	public void deleteEmployee(@PathVariable Long id) {
+	public ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
 		employeeRepository.deleteById(id);
+		return new ResponseEntity<Object>(HttpStatus.ACCEPTED);
 	}
 	
 	@PostMapping("/employees")
 	public ResponseEntity<?> saveEmployee(@RequestBody @Valid Employee employee) {
-		
-		employee.setId(0l);
-		
+		employee.setEmployeeId(0l);
 		Employee savedEmployee = employeeRepository.save(employee);
-		
 		return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
 	}
 	
@@ -93,8 +122,11 @@ public class RestController {
 	public ResponseEntity<?> updateEmployee(@PathVariable Long id, @RequestBody @Valid Employee employee) throws NotFoundException {
 		Optional<Employee> updatedEmployee = employeeRepository.findById(id);
 		if(!updatedEmployee.isPresent()) throw new NotFoundException("Can't find employee with ID :" + id);
-		employee.setId(id);
+		employee.setEmployeeId(id);
 		employeeRepository.save(employee);
 		return new ResponseEntity<>(employee,HttpStatus.OK);
+		//Enabling HATEOUS support
+//		Resource<Employee> resource = new Resource<Employee>(employee, new Link(""));
+//		return resource;
 	}
 }

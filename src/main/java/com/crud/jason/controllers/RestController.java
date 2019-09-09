@@ -124,15 +124,15 @@ public class RestController {
 	
 	
 	@PutMapping("/employee/{id}")
-	public ResponseEntity<?> updateEmployee(@PathVariable Long id, @RequestBody @Valid Employee employee) throws NotFoundException {
+	public Resources<Employee> updateEmployee(@PathVariable Long id, @RequestBody @Valid Employee employee,PagedResourcesAssembler assembler) throws NotFoundException {
 		Optional<Employee> updatedEmployee = employeeRepository.findById(id);
 		if(!updatedEmployee.isPresent()) throw new NotFoundException("Can't find employee with ID :" + id);
 		employee.setEmployeeId(id);
 		employeeRepository.save(employee);
-		
-		return new ResponseEntity<>(employee,HttpStatus.OK);
-		//Enabling HATEOUS support
-//		Resource<Employee> resource = new Resource<Employee>(employee, new Link(""));
-//		return resource;
+		employee.add(linkTo(methodOn(RestController.class).getEmployee(employee.getEmployeeId(),assembler)).withSelfRel());
+		return new Resources<Employee>(
+				new ArrayList<>(Arrays.asList(employee)),
+				linkTo(methodOn(RestController.class).getAllEmployees(PageRequest.of(0, 1),assembler)).withSelfRel());
+
 	}
 }

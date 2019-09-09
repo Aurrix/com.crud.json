@@ -15,28 +15,27 @@
  */
 package com.crud.jason.controllers;
 
-import java.lang.module.FindException;
-import java.util.List;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,17 +44,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.crud.jason.entities.Employee;
 import com.crud.jason.repository.EmployeeRepository;
 
 import javassist.NotFoundException;
-
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 /**
  * @author Alisher Urunov
  *
@@ -74,33 +67,41 @@ public class RestController {
 	EmployeeRepository employeeRepository;
 	
 	@GetMapping("/employees")
-	public Resources<?> getAllEmployees(Pageable pageable) {
+	public ResponseEntity<?> getAllEmployees(Pageable pageable,PagedResourcesAssembler assembler) {
 		
 		Page<Employee> collection = employeeRepository.findAll(pageable);
 		collection.forEach(e ->{
 			try {
-				e.add(linkTo(methodOn(RestController.class).getEmployee(e.getEmployeeId())).withSelfRel());
+				e.add(linkTo(methodOn(RestController.class).getEmployee(e.getEmployeeId(),assembler)).withSelfRel());
 			} catch (NotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
-		Link selfLink = linkTo(methodOn(RestController.class).getAllEmployees(pageable)).withSelfRel();
-		Resources<Employee> resources = new Resources<>(collection,selfLink);
 		
-		return resources;
+		PageMetadata pageMetaData = new PagedResources.PageMetadata(pageable.getPageSize(), pageable.getPageNumber(), collection.getSize());
+		
+		Link next = linkTo(methodOn(RestController.class).getAllEmployees(pageable.next(),assembler)).withRel("next");
+		
+		Link previous = linkTo(methodOn(RestController.class).getAllEmployees(pageable.previousOrFirst(),assembler)).withRel("previous");
+		
+		Resources<Employee> resources =  assembler.toResource(collection);
+		
+		resources.add(next, previous);
+		
+		return new ResponseEntity<>(resources,HttpStatus.OK);
 	}
 	
 	@GetMapping("/employee/{id}")
-	public Resource<?> getEmployee(@PathVariable Long id) throws NotFoundException {
+	public Resource<?> getEmployee(@PathVariable Long id, PagedResourcesAssembler assembler) throws NotFoundException {
 		Optional<Employee> employeeOptional = employeeRepository.findById(id);
 		
 		if (!employeeOptional.isPresent()) {
 			
 		throw new NotFoundException("Can't find employee with ID :" + id);
 		}
-		Link linkToQueue = linkTo(methodOn(RestController.class).getAllEmployees(PageRequest.of(0, 1))).withSelfRel();
-		employeeOptional.get().add(linkTo(methodOn(RestController.class).getEmployee(id)).withSelfRel());
+		Link linkToQueue = linkTo(methodOn(RestController.class).getAllEmployees(PageRequest.of(0, 1),assembler)).withSelfRel();
+		employeeOptional.get().add(linkTo(methodOn(RestController.class).getEmployee(id,assembler)).withSelfRel());
 		return new Resource<Employee>(employeeOptional.get(), linkToQueue);
 	}
 	
@@ -111,10 +112,14 @@ public class RestController {
 	}
 	
 	@PostMapping("/employees")
-	public ResponseEntity<?> saveEmployee(@RequestBody @Valid Employee employee) {
+	public Resources<Employee> saveEmployee(@RequestBody @Valid Employee employee,PagedResourcesAssembler assembler) throws NotFoundException {
 		employee.setEmployeeId(0l);
 		Employee savedEmployee = employeeRepository.save(employee);
-		return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
+		savedEmployee.add(linkTo(methodOn(RestController.class).getEmployee(employee.getEmployeeId(),assembler)).withSelfRel());
+		
+		return new Resources<Employee>(
+			new ArrayList<>(Arrays.asList(savedEmployee)),
+			linkTo(methodOn(RestController.class).getAllEmployees(PageRequest.of(0, 1),assembler)).withSelfRel());
 	}
 	
 	
@@ -124,6 +129,7 @@ public class RestController {
 		if(!updatedEmployee.isPresent()) throw new NotFoundException("Can't find employee with ID :" + id);
 		employee.setEmployeeId(id);
 		employeeRepository.save(employee);
+		
 		return new ResponseEntity<>(employee,HttpStatus.OK);
 		//Enabling HATEOUS support
 //		Resource<Employee> resource = new Resource<Employee>(employee, new Link(""));

@@ -36,6 +36,7 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -62,7 +63,8 @@ import javassist.NotFoundException;
  */
 @org.springframework.web.bind.annotation.RestController
 public class RestController {
-
+	
+	
 	@Autowired
 	EmployeeRepository employeeRepository;
 	
@@ -81,13 +83,7 @@ public class RestController {
 		
 		PageMetadata pageMetaData = new PagedResources.PageMetadata(pageable.getPageSize(), pageable.getPageNumber(), collection.getSize());
 		
-		Link next = linkTo(methodOn(RestController.class).getAllEmployees(pageable.next(),assembler)).withRel("next");
-		
-		Link previous = linkTo(methodOn(RestController.class).getAllEmployees(pageable.previousOrFirst(),assembler)).withRel("previous");
-		
 		Resources<Employee> resources =  assembler.toResource(collection);
-		
-		resources.add(next, previous);
 		
 		return new ResponseEntity<>(resources,HttpStatus.OK);
 	}

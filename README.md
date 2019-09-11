@@ -31,9 +31,9 @@ http:\\localhost:8080\employee\{id} (get) - returns Employee object wrapped into
 
 http:\\localhost:8080\employees (post) - accepts plain JSON object with fields (name, surname, email) 
 
-http:\\localhost:8080\employee\{id} (put)
+http:\\localhost:8080\employee\{id} (put) accepts plain JSON object with fields (name, surname, email) and returns wrapped Employee to Resources object 
 
-http:\\localhost:8080\employee\{id} (delete)
+http:\\localhost:8080\employee\{id} (delete) accepts plain JSON object with fields (name, surname, email) and returns HTTPS STATUS ACCEPTED
 
 Validation:
 
@@ -43,8 +43,10 @@ name & surname : not blank/null, max 40 characters
 
 ### Testing
 
-To be implemented
-
+To run test cases repeat steps 1,2 then type:
+```
+gradle test
+```
 ## License
 
 This project is licensed under the [Apache License 2](https://www.apache.org/licenses/LICENSE-2.0)

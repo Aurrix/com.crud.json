@@ -1,5 +1,5 @@
 # com.crud.json
- A simple JSON CRUD application (Lombok,Spring Data, h2)
+ A simple JSON CRUD application (Lombok,Spring Data, h2, HATEOAS) with implemented support for HATEOAS.
 
 ## Getting Started
 
@@ -22,6 +22,18 @@ GRADLE 5.6
 gradle build
 ```
 4. Gradle will generate jar at ../com.crud.json/build/libs/
+
+### CRUD URLs (JSON)
+
+http:\\localhost:8080\employees (get) - returns paged Employee objects
+
+http:\\localhost:8080\employee\{id} (get)
+
+http:\\localhost:8080\employees (post)
+
+http:\\localhost:8080\employee\{id} (put)
+
+http:\\localhost:8080\employee\{id} (delete)
 
 ### Testing
 

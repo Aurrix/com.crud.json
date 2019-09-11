@@ -17,6 +17,7 @@ package com.crud.jason.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -36,7 +37,7 @@ import lombok.Data;
 @Entity
 public class Employee extends ResourceSupport {
 
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	public Long employeeId;
 	@NotNull

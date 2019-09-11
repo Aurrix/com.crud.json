@@ -15,17 +15,12 @@
  */
 package com.crud.jason.config;
 
-import javax.validation.ConstraintViolationException;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -47,16 +42,12 @@ public class RestExceptionHanlder extends ResponseEntityExceptionHandler {
 	        		,new HttpHeaders(),reply.getStatus());
 	    }
 		
-		
-		
 		@Override
 		protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 				HttpHeaders headers, HttpStatus status, WebRequest request) {
 			 ExceptionEntity reply;
-		        return new ResponseEntity<>(reply = new ExceptionEntity(HttpStatus.BAD_REQUEST, "Entiry didn't path validation(should not be blank and not exceed 40 characters)", ex.getLocalizedMessage())
+		        return new ResponseEntity<>(reply = new ExceptionEntity(HttpStatus.BAD_REQUEST, "Entry didn't path validation(should not be blank and not exceed 40 characters)", ex.getLocalizedMessage())
 		        		,new HttpHeaders(),reply.getStatus());
 		}
-
-
 
 }

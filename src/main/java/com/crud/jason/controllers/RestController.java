@@ -20,8 +20,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -36,7 +34,6 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -109,7 +106,7 @@ public class RestController {
 	
 	@PostMapping("/employees")
 	public Resources<Employee> saveEmployee(@RequestBody @Valid Employee employee,PagedResourcesAssembler assembler) throws NotFoundException {
-		employee.setEmployeeId(0l);
+		
 		Employee savedEmployee = employeeRepository.save(employee);
 		savedEmployee.add(linkTo(methodOn(RestController.class).getEmployee(employee.getEmployeeId(),assembler)).withSelfRel());
 		

@@ -1,5 +1,6 @@
 package com.crud.jason;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -16,8 +17,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 
-import com.crud.jason.config.ExceptionEntity;
 import com.crud.jason.entities.Employee;
 
 @RunWith(SpringRunner.class)
@@ -69,15 +70,31 @@ public class ApplicationTests {
 	        assertNotNull(postResponse);
 	        assertNotNull(postResponse.getBody());
 	        assertTrue(postResponse.getStatusCode()==HttpStatus.OK);
-	}
+	}	
 	
 	@Test
 	public void putEmployeeTest() {
-		
+		int id = 2;
+		Employee response = restTemplate.getForObject(rootUrl()+"/employee/"+id, Employee.class);
+		response.setName("TestPut");
+		restTemplate.put(rootUrl()+"/employee/"+id, response);
+		Employee changedResponse = restTemplate.getForObject(rootUrl()+"/employee/"+id, Employee.class);
+		assertEquals(changedResponse.getName(), "TestPut");
 	}
 	
 	@Test
 	public void deleteEmployeeTest() {
+		
+		int id = 3;
+		Employee response = restTemplate.getForObject(rootUrl()+"/employee/"+id, Employee.class);
+		assertNotNull(response);
+		restTemplate.delete(rootUrl()+"/employee/"+id);
+		
+		try {
+			response = restTemplate.getForObject(rootUrl()+"/employee/"+id, Employee.class);
+		} catch (HttpClientErrorException  e) {
+			assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
+		}
 		
 	}
 	

@@ -25,15 +25,21 @@ gradle build
 
 ### CRUD URLs (JSON)
 
-http:\\localhost:8080\employees (get) - returns paged Employee objects
+http:\\localhost:8080\employees (get) - returns paged Employee list wrapped into Resources
 
-http:\\localhost:8080\employee\{id} (get)
+http:\\localhost:8080\employee\{id} (get) - returns Employee object wrapped into Resource
 
-http:\\localhost:8080\employees (post)
+http:\\localhost:8080\employees (post) - accepts plain JSON object with fields (name, surname, email) 
 
 http:\\localhost:8080\employee\{id} (put)
 
 http:\\localhost:8080\employee\{id} (delete)
+
+Validation:
+
+email: hibernate email validation
+
+name & surname : not blank/null, max 40 characters
 
 ### Testing
 

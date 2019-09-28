@@ -16,11 +16,8 @@
 package com.crud.jason.repository;
 
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.crud.jason.entities.Employee;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * @author Alisher Urunov
@@ -29,5 +26,4 @@ import com.crud.jason.entities.Employee;
  */
 //@RepositoryRestResource(path = "employees")
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-	public Page findAll(Pageable pageable);
 }

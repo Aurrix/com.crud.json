@@ -27,13 +27,13 @@ gradle build
 
 http:\\localhost:8080\employees (get) - returns paged Employee list wrapped into Resources
 
-http:\\localhost:8080\employee\{id} (get) - returns Employee object wrapped into Resource
+http:\\localhost:8080\employees\{id} (get) - returns Employee object wrapped into Resource
 
 http:\\localhost:8080\employees (post) - accepts plain JSON object with fields (name, surname, email) 
 
-http:\\localhost:8080\employee\{id} (put) accepts plain JSON object with fields (name, surname, email) and returns wrapped Employee to Resources object 
+http:\\localhost:8080\employees\{id} (put) accepts plain JSON object with fields (name, surname, email) and returns wrapped Employee to Resources object 
 
-http:\\localhost:8080\employee\{id} (delete) accepts plain JSON object with fields (name, surname, email) and returns HTTPS STATUS ACCEPTED
+http:\\localhost:8080\employees\{id} (delete) accepts plain JSON object with fields (name, surname, email) and returns HTTPS STATUS ACCEPTED
 
 Validation:
 

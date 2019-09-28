@@ -15,13 +15,12 @@
  */
 package com.crud.jason.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alisher Urunov
@@ -39,7 +38,7 @@ public class ExceptionEntity {
 		super();
 		this.status = status;
 		this.message = message;
-		errors = new ArrayList<Object>();
+		errors = new ArrayList<>();
 		errors.add(error);
 	}
     

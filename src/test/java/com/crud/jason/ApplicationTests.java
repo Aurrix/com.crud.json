@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.crud.jason.entities.Employee;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
-
-import com.crud.jason.entities.Employee;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -84,7 +83,6 @@ public class ApplicationTests {
 	
 	@Test
 	public void deleteEmployeeTest() {
-		
 		int id = 3;
 		Employee response = restTemplate.getForObject(rootUrl()+"/employee/"+id, Employee.class);
 		assertNotNull(response);

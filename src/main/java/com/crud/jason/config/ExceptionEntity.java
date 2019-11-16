@@ -15,40 +15,28 @@
  */
 package com.crud.jason.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Alisher Urunov
- *
  */
 @Getter
 @Setter
-public class ExceptionEntity {
+class ExceptionEntity {
 
-	private HttpStatus status;
-    private String message;
-    private List<Object> errors;
-	
-    public ExceptionEntity(HttpStatus status, String message, Object error) {
-		super();
-		this.status = status;
-		this.message = message;
-		errors = new ArrayList<>();
-		errors.add(error);
-	}
-    
-    public ExceptionEntity(HttpStatus status, String message, List<Object> errors) {
-		super();
-		this.status = status;
-		this.message = message;
-		this.errors = errors;
-	}
+  private HttpStatus status;
+  private String message;
+  private List<Object> errors;
 
-    
-    
+  ExceptionEntity(HttpStatus status, String message, Object error) {
+    super();
+    this.status = status;
+    this.message = message;
+    errors = new ArrayList<>();
+    errors.add(error);
+  }
 }

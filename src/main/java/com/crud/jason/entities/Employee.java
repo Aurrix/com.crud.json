@@ -20,40 +20,54 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.hateoas.ResourceSupport;
 
-import lombok.Data;
-
 /**
  * @author Alisher Urunov
- *
  */
-@Data
+@Getter
+@Setter
 @Entity
 public class Employee extends ResourceSupport {
 
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Id
-	public Long employeeId;
-	@NotNull
-	@NotBlank
-	@Length(max = 40)
-	public String name;
-	@NotNull
-	@NotBlank
-	@Length(max = 40)
-	public String surname;
-	@NotNull
-	@NotBlank
-	@Email
-	@Length(max = 40)
-	public String email;
-	
-	
-	
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  public Long employeeId;
+
+  @NotNull
+  @NotBlank
+  @Length(max = 40)
+  public String name;
+
+  @NotNull
+  @NotBlank
+  @Length(max = 40)
+  public String surname;
+
+  @NotNull
+  @NotBlank
+  @Email
+  @Length(max = 40)
+  public String email;
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Employee) {
+      Employee comparedObject = (Employee) obj;
+      return comparedObject.getEmail().equals(this.email)
+          && comparedObject.getName().equals(this.name)
+          && comparedObject.getSurname().equals(this.surname);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return name.hashCode() + name.hashCode() + email.hashCode();
+  }
 }

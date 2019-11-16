@@ -33,20 +33,22 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<ExceptionEntity> notFoundReply(NotFoundException ex) {
+    ExceptionEntity reply = new ExceptionEntity(
+        HttpStatus.NOT_FOUND, "Error 404, try again with different path variable",
+        ex.getLocalizedMessage());
+    return new ResponseEntity<>(reply, new HttpHeaders(), reply.getStatus());
+  }
 
-    public ResponseEntity<?> notFoundReply(NotFoundException ex) {
-        ExceptionEntity reply;
-        return new ResponseEntity<>(reply = new ExceptionEntity(HttpStatus.NOT_FOUND, "Error 404, try again with different path variable", ex.getLocalizedMessage())
-                , new HttpHeaders(), reply.getStatus());
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
-        ExceptionEntity reply;
-        return new ResponseEntity<>(reply = new ExceptionEntity(HttpStatus.BAD_REQUEST, "Entry didn't path validation(should not be blank and not exceed 40 characters)", ex.getLocalizedMessage())
-                , new HttpHeaders(), reply.getStatus());
-    }
+  @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+      HttpHeaders headers, HttpStatus status, WebRequest request) {
+    ExceptionEntity reply = new ExceptionEntity(
+        HttpStatus.BAD_REQUEST,
+        "Entry didn't path validation(should not be blank and not exceed 40 characters)",
+        ex.getLocalizedMessage());
+    return new ResponseEntity<>(reply, new HttpHeaders(), reply.getStatus());
+  }
 
 }
